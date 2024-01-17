@@ -1,18 +1,20 @@
 export interface CachePropertyDescriptor<T, R> extends PropertyDescriptor {
-  get?: (this: T) => R;
+  get?: (this: T) => R
 };
 
-export function cache<T, R>(
+export function cache<T, R> (
   target: any,
   name: PropertyKey,
   descriptor: CachePropertyDescriptor<T, R>
-) {
-  const getter = descriptor.get;
+): void {
+  const getter = descriptor.get
 
-  if (!getter) throw new TypeError("Getter property descriptor expected");
+  if (getter === undefined) {
+    throw new TypeError('Getter property descriptor expected')
+  }
 
-  descriptor.get = function(this: T) {
-    const value = getter.call(this);
+  descriptor.get = function (this: T) {
+    const value = getter.call(this)
 
     Object.defineProperty(this, name, {
       configurable: descriptor.configurable,
@@ -21,6 +23,6 @@ export function cache<T, R>(
       value
     })
 
-    return value;
-  };
+    return value
+  }
 }
